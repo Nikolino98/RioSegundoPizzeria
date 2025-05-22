@@ -2,118 +2,117 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search } from "lucide-react"
-import { useRouter } from "next/navigation"
-
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { useToast } from "@/hooks/use-toast"
+import { supabase } from "@/lib/supabase"
+import type { Product } from "@/lib/supabase-actions"
 
 export function SearchForm() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<any[]>([])
+  const [results, setResults] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
-  const { toast } = useToast()
+  const [allProducts, setAllProducts] = useState<Product[]>([])
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Cargar todos los productos al montar el componente
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const { data, error } = await supabase.from("products").select("*")
+        if (error) {
+          console.error("Error loading products:", error)
+          return
+        }
+        setAllProducts(data || [])
+      } catch (error) {
+        console.error("Error loading products:", error)
+      }
+    }
 
+    loadProducts()
+  }, [])
+
+  // Filtrar productos cuando cambie la consulta
+  useEffect(() => {
     if (!query.trim()) {
+      setResults([])
       return
     }
 
     setIsLoading(true)
-    setIsOpen(true)
+    const filteredProducts = allProducts.filter((product) => {
+      const nameMatch = product.name.toLowerCase().includes(query.toLowerCase())
+      const descriptionMatch = product.description.toLowerCase().includes(query.toLowerCase())
+      const categoryMatch = product.category.toLowerCase().includes(query.toLowerCase())
+      return nameMatch || descriptionMatch || categoryMatch
+    })
 
-    try {
-      const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`)
-      const data = await response.json()
+    setResults(filteredProducts)
+    setIsLoading(false)
+  }, [query, allProducts])
 
-      setResults(data.products || [])
-
-      if (data.products.length === 0) {
-        toast({
-          title: "Sin resultados",
-          description: "No se encontraron productos que coincidan con tu búsqueda.",
-        })
-      }
-    } catch (error) {
-      console.error("Error searching:", error)
-      toast({
-        title: "Error",
-        description: "Ocurrió un error al buscar productos.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // La búsqueda se realiza automáticamente en el useEffect
   }
 
-  const handleResultClick = (category: string) => {
-    // Cerrar resultados
-    setIsOpen(false)
-    setQuery("")
-
-    // Navegar a la sección del menú y seleccionar la categoría
-    const menuElement = document.getElementById("menu")
-    if (menuElement) {
-      menuElement.scrollIntoView({ behavior: "smooth" })
-
-      // Seleccionar la pestaña correspondiente
-      setTimeout(() => {
-        const tabButton = document.querySelector(`[data-state="inactive"][value="${category}"]`) as HTMLButtonElement
-        if (tabButton) {
-          tabButton.click()
-        }
-      }, 500)
+  const scrollToCategory = (category: string) => {
+    const element = document.getElementById(`category-${category}`)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+      setQuery("")
+      setResults([])
     }
   }
 
   return (
-    <div className="relative">
-      <form onSubmit={handleSearch} className="relative">
+    <div className="relative w-full max-w-md mx-auto">
+      <form onSubmit={handleSubmit} className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
           placeholder="Buscar productos..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pr-10"
+          className="pl-10 pr-4"
         />
-        <Button
-          type="submit"
-          variant="ghost"
-          size="icon"
-          className="absolute right-0 top-0 h-full"
-          disabled={isLoading}
-        >
-          <Search className="h-4 w-4" />
-          <span className="sr-only">Buscar</span>
-        </Button>
       </form>
 
-      {isOpen && results.length > 0 && (
-        <Card className="absolute z-10 mt-1 w-full">
-          <CardContent className="p-2">
-            <ul className="max-h-60 overflow-auto">
-              {results.map((product) => (
-                <li key={product.id}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-left"
-                    onClick={() => handleResultClick(product.category)}
-                  >
-                    <span className="font-medium">{product.name}</span>
-                    <span className="ml-2 text-sm text-gray-500">({product.category})</span>
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+      {/* Resultados de búsqueda */}
+      {query && (
+        <div className="absolute top-full left-0 right-0 z-50 mt-2 max-h-96 overflow-y-auto">
+          <Card>
+            <CardContent className="p-2">
+              {isLoading ? (
+                <div className="p-4 text-center text-muted-foreground">Buscando...</div>
+              ) : results.length > 0 ? (
+                <div className="space-y-2">
+                  {results.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                      onClick={() => scrollToCategory(product.category)}
+                    >
+                      <img
+                        src={product.image || "/placeholder.svg?height=40&width=40"}
+                        alt={product.name}
+                        className="w-10 h-10 rounded object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{product.name}</p>
+                        <p className="text-xs text-muted-foreground capitalize">{product.category}</p>
+                      </div>
+                      <p className="text-sm font-medium">${product.price}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-muted-foreground">No se encontraron productos</div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   )
