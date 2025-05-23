@@ -8,8 +8,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Rio Segundo Pizzeria",
-  description: "Auténtica cocina italiana en Rio Segundo, Córdoba",
+  title: "Rio Segundo Pizzeria & Cafe",
+  description: "Auténtica cocina en Rio Segundo, Córdoba",
 }
 
 export default function RootLayout({
