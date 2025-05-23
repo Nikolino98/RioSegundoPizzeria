@@ -150,7 +150,7 @@ export default async function Home() {
 
       <main className="dark:bg-gray-950">
         {/* Hero Section */}
-        <section id="inicio" className="relative h-[80vh] w-full">
+        <section id="inicio" className="relative h-[90vh] w-full">
           <div className="absolute inset-0">
             <Image
               src={local}
