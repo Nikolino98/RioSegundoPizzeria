@@ -7,7 +7,7 @@ import { ScrollToMenuButton, MobileNav, ThemeToggle } from "./client-components"
 import { SearchForm } from "@/components/search-form"
 import { getProducts } from "@/lib/supabase-actions"
 import logo from "../images/logo.png"
-// import local from "../images/local.jpg"
+import local from "../images/local.png"
 
 // Datos de ejemplo para usar mientras se soluciona la conexión a Supabase
 const mockProducts = {
@@ -153,7 +153,7 @@ export default async function Home() {
         <section id="inicio" className="relative h-[80vh] w-full">
           <div className="absolute inset-0">
             <Image
-              src="/placeholder.svg?height=800&width=1200"
+              src={local}
               alt="Pizza artesanal"
               fill
               className="object-cover brightness-50"
