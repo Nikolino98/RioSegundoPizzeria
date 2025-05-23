@@ -1,11 +1,13 @@
 import Image from "next/image"
-import { Clock, MapPin, Phone } from "lucide-react"
+import { Clock, MapPin, MessageCircle, Phone } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CartButton } from "@/components/cart/cart-button"
 import { ProductCard } from "@/components/product-card"
 import { ScrollToMenuButton, MobileNav, ThemeToggle } from "./client-components"
 import { SearchForm } from "@/components/search-form"
 import { getProducts } from "@/lib/supabase-actions"
+import logo from "../images/logo.png"
+import local from "../images/local.jpg"
 
 // Datos de ejemplo para usar mientras se soluciona la conexión a Supabase
 const mockProducts = {
@@ -106,13 +108,13 @@ export default async function Home() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Image
-              src="/placeholder.svg?height=40&width=40"
+              src={logo}
               alt="Rio Segundo Pizzeria Logo"
               width={40}
               height={40}
               className="h-10 w-10 object-contain"
             />
-            <span className="text-xl font-bold text-red-700 dark:text-red-500">Rio Segundo Pizzeria</span>
+            <span className="text-xl font-bold text-red-700 dark:text-red-500">Rio Segundo Pizzeria & Cafe</span>
           </div>
           <nav className="hidden md:block">
             <ul className="flex gap-6">
@@ -151,7 +153,7 @@ export default async function Home() {
         <section id="inicio" className="relative h-[80vh] w-full">
           <div className="absolute inset-0">
             <Image
-              src="/placeholder.svg?height=800&width=1200"
+              src={local}
               alt="Pizza artesanal"
               fill
               className="object-cover brightness-50"
@@ -159,8 +161,8 @@ export default async function Home() {
             />
           </div>
           <div className="container relative z-10 mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
-            <h1 className="mb-2 font-serif text-5xl font-bold md:text-7xl">Rio Segundo Pizzeria</h1>
-            <p className="mb-6 text-xl md:text-2xl">Auténtica cocina italiana en cada bocado</p>
+            <h1 className="mb-2 font-serif text-5xl font-bold md:text-7xl">Pizzeria & Cafe</h1>
+            <p className="mb-6 text-xl md:text-2xl">Auténtica cocina en cada bocado</p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <ScrollToMenuButton />
             </div>
@@ -176,7 +178,7 @@ export default async function Home() {
               </h2>
               <div className="mb-6 h-1 w-16 bg-red-700 dark:bg-red-500 mx-auto"></div>
               <p className="mb-8 text-gray-700 dark:text-gray-300">
-                Fundada en 2010, Rio Segundo Pizzeria nació de la pasión por la auténtica cocina italiana. Nuestras
+                Fundada en 2020, Rio Segundo Pizzeria nació de la pasión por la auténtica cocina italiana. Nuestras
                 recetas han sido transmitidas por generaciones, trayendo los sabores genuinos de Italia a cada plato que
                 servimos. Utilizamos ingredientes frescos y de la más alta calidad para crear experiencias culinarias
                 memorables.
@@ -201,7 +203,7 @@ export default async function Home() {
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">Recetas Tradicionales</h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Sabores auténticos italianos con un toque local que nos hace únicos.
+                    Sabores auténticos con un toque local que nos hace únicos.
                   </p>
                 </div>
                 <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
@@ -248,9 +250,9 @@ export default async function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold">Horno de Leña</h3>
+                  <h3 className="mb-2 text-lg font-semibold">Horno de barro</h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Nuestras pizzas se hornean en auténticos hornos de leña para un sabor inigualable.
+                    Nuestras pizzas se hornean en auténticos hornos de barro para un sabor inigualable.
                   </p>
                 </div>
               </div>
@@ -266,9 +268,7 @@ export default async function Home() {
             </h2>
             <div className="mb-10 h-1 w-16 bg-red-700 dark:bg-red-500 mx-auto"></div>
 
-            <div className="mx-auto max-w-md mb-8">
-              <SearchForm />
-            </div>
+            
 
             <Tabs defaultValue={defaultCategory} className="mx-auto max-w-4xl">
               {/* Pestañas de categorías - Mejoradas para móvil y escritorio */}
@@ -317,21 +317,27 @@ export default async function Home() {
                   <div className="space-y-6">
                     <div className="flex items-start justify-center">
                       <MapPin className="mr-3 h-5 w-5 flex-shrink-0 mt-1" />
-                      <p className="text-center">
-                        Av. Principal 123, Rio Segundo
+                      
+                      <a href="https://g.co/kgs/zrEJwxT"><p className="text-center">
+                        Alem 1158, Río Segundo
                         <br />
                         Córdoba, Argentina
-                      </p>
+                      </p></a>
                     </div>
                     <div className="flex items-center justify-center">
-                      <Phone className="mr-3 h-5 w-5" />
-                      <p>+54 351 123 4567</p>
+                      <MessageCircle className="mr-3 h-5 w-5" />
+                      <a href="https://wa.me/5493517716373"
+                        className="whatsapp_float"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >3517716373
+                        </a>
                     </div>
                     <div className="flex items-start justify-center">
                       <Clock className="mr-3 h-5 w-5 mt-1" />
                       <div className="text-center">
-                        <p>Lunes a Jueves: 12:00 - 23:00</p>
-                        <p>Viernes a Domingo: 12:00 - 00:00</p>
+                        <p>Lunes a Jueves: 18:00 - 23:00</p>
+                        <p>Viernes a Domingo: 18:00 - 01:00</p>
                       </div>
                     </div>
                   </div>
@@ -358,7 +364,7 @@ export default async function Home() {
                       </svg>
                     </a>
                     <a
-                      href="#"
+                      href="https://www.instagram.com/riosegundo.pizzeria/"
                       className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-red-700 transition-colors hover:bg-red-100 dark:bg-gray-800 dark:text-red-500 dark:hover:bg-gray-700"
                     >
                       <svg
@@ -378,25 +384,7 @@ export default async function Home() {
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                       </svg>
                     </a>
-                    <a
-                      href="#"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-red-700 transition-colors hover:bg-red-100 dark:bg-gray-800 dark:text-red-500 dark:hover:bg-gray-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-5 w-5"
-                      >
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                      </svg>
-                    </a>
+                    
                   </div>
                 </div>
               </div>
@@ -411,16 +399,16 @@ export default async function Home() {
           <div className="flex flex-col items-center justify-between md:flex-row">
             <div className="mb-4 flex items-center md:mb-0">
               <Image
-                src="/placeholder.svg?height=40&width=40"
+                src={logo}
                 alt="Rio Segundo Pizzeria Logo"
                 width={40}
                 height={40}
                 className="h-10 w-10 object-contain"
               />
-              <span className="ml-2 text-xl font-bold">Rio Segundo Pizzeria</span>
+              <span className="ml-2 text-xl font-bold">Rio Segundo Pizzeria & Cafe</span>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-sm text-gray-400">© 2023 Rio Segundo Pizzeria. Todos los derechos reservados.</p>
+              <p className="text-sm text-gray-400">© 2023 Rio Segundo Pizzeria & Cafe. Todos los derechos reservados. Nicolas Perez</p>
             </div>
           </div>
         </div>
